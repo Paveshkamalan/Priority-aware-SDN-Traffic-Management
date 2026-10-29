@@ -1,0 +1,40 @@
+{
+  "experiment_title": "Experiment 4: Proposed System (Adaptive Rerouting + QoS)",
+  "routing_mode": "adaptive_multipath_qos",
+  "adaptive_rerouting": true,
+  "qos_queuing": true,
+  "duration_seconds": 60,
+  "summary": {
+    "primary_path_flows": ["flow_high_voip", "flow_medium_web"],
+    "rerouted_path_flows": ["flow_low_bulk"],
+    "flow_distribution": {
+      "flow_high_voip": { "path": [1, 2, 4, 6], "status": "Protected (Queue 2)" },
+      "flow_medium_web": { "path": [1, 2, 4, 6], "status": "Primary (Queue 1)" },
+      "flow_low_bulk": { "path": [1, 2, 5, 6], "status": "Rerouted to Path 2 (Queue 0)" }
+    },
+    "high_priority_stream": {
+      "traffic_type": "Voice/Video UDP",
+      "target_rate_mbps": 5.0,
+      "achieved_rate_mbps": 5.0,
+      "packet_loss_pct": 0.0,
+      "avg_latency_ms": 8.14,
+      "jitter_ms": 0.32
+    },
+    "medium_priority_stream": {
+      "traffic_type": "Web/Interactive TCP",
+      "target_rate_mbps": 20.0,
+      "achieved_rate_mbps": 19.8,
+      "packet_loss_pct": 0.2,
+      "avg_latency_ms": 9.45
+    },
+    "low_priority_stream": {
+      "traffic_type": "Bulk Backup TCP (Rerouted to Path 2)",
+      "target_rate_mbps": 40.0,
+      "achieved_rate_mbps": 24.6,
+      "packet_loss_pct": 1.1,
+      "avg_latency_ms": 11.2
+    },
+    "rerouting_events": 1,
+    "conclusion": "Upon detecting link s2-s4 utilization exceeding 85% for 3 intervals, the PriorityRerouter automatically diverted the low-priority flow to Path 2 ([1, 2, 5, 6]). High-priority traffic remained protected in Queue 2 on Path 1, experiencing 0% packet loss and 8.14ms latency. Bottleneck utilization on Path 1 dropped from 98% to 62.5%."
+  }
+}

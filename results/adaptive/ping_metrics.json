@@ -1,0 +1,11 @@
+{
+  "src": "h1",
+  "dst": "10.0.0.2",
+  "packets_transmitted": 10,
+  "packets_received": 10,
+  "loss_pct": 0.0,
+  "min_rtt_ms": 7.82,
+  "avg_rtt_ms": 8.14,
+  "max_rtt_ms": 8.52,
+  "mdev_ms": 0.21
+}

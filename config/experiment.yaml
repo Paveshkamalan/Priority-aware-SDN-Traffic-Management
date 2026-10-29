@@ -1,0 +1,80 @@
+# ==============================================================================
+# Experiment & Algorithm Parameters Configuration
+# ==============================================================================
+
+monitoring:
+  interval_seconds: 1.0         # Statistics polling interval
+  history_window_size: 10       # Number of sliding window samples kept in memory
+
+thresholds:
+  warning_utilization: 0.70     # 70% Link utilization triggers warning
+  congestion_utilization: 0.85  # 85% Link utilization triggers rerouting
+  recovery_utilization: 0.50    # 50% Link utilization allows return to shortest path
+  
+hysteresis:
+  congestion_consecutive_intervals: 3  # Must stay above congestion threshold for 3 intervals
+  recovery_consecutive_intervals: 5    # Must stay below recovery threshold for 5 intervals
+
+traffic_profiles:
+  high:
+    name: "Voice/Video Stream (High Priority)"
+    priority: 3
+    protocol: "udp"
+    target_rate_mbps: 5.0
+    dst_port: 5001
+    tos: 184 # DSCP EF (46)
+    duration: 60
+  medium:
+    name: "Web/API Stream (Medium Priority)"
+    priority: 2
+    protocol: "tcp"
+    target_rate_mbps: 20.0
+    dst_port: 5002
+    tos: 104 # DSCP AF31 (26)
+    duration: 60
+  low:
+    name: "Bulk Backup / File Transfer (Low Priority)"
+    priority: 1
+    protocol: "tcp"
+    target_rate_mbps: 40.0
+    dst_port: 5003
+    tos: 0 # DSCP Best Effort (0)
+    duration: 60
+
+experiments:
+  exp1_baseline:
+    title: "Baseline Shortest-Path Routing"
+    description: "All traffic statically routed along Path 1. Demonstrates bottleneck saturation, severe loss and latency spikes for all flows."
+    adaptive_routing_enabled: false
+    qos_enabled: false
+    duration_seconds: 60
+
+  exp2_adaptive_only:
+    title: "Adaptive Rerouting Only"
+    description: "Low-priority flow is rerouted upon congestion, but without QoS queues. Demonstrates load shifting across alternate paths."
+    adaptive_routing_enabled: true
+    qos_enabled: false
+    duration_seconds: 60
+
+  exp3_qos_only:
+    title: "QoS Priority Queueing Only"
+    description: "Shortest-path routing retained, but QoS priority queues enabled. Demonstrates protection of high-priority traffic over low-priority packets."
+    adaptive_routing_enabled: false
+    qos_enabled: true
+    duration_seconds: 60
+
+  exp4_full_system:
+    title: "Full Proposed System (Adaptive Rerouting + QoS)"
+    description: "Combines fast queue scheduling (QoS) with multi-path congestion avoidance (Rerouting). High priority remains untouched on Path 1; low priority shifts to Path 2/3."
+    adaptive_routing_enabled: true
+    qos_enabled: true
+    duration_seconds: 60
+
+  exp5_link_failure:
+    title: "Link Failure Resilience"
+    description: "Link S2-S4 is brought down midway through the experiment. Affected flows automatically failover to Path 2 or Path 3."
+    target_failure_link: ["s2", "s4"]
+    failure_trigger_time_seconds: 20
+    adaptive_routing_enabled: true
+    qos_enabled: true
+    duration_seconds: 60

@@ -1,0 +1,63 @@
+# ==============================================================================
+# QoS & Priority Queue Configuration
+# ==============================================================================
+# Separates path selection (WHERE traffic goes) from queue scheduling (WHICH packets go first).
+# Queues configured on relevant switch egress ports via Linux tc / OVS QoS tables.
+#
+# Classification Mechanisms:
+# 1. IP DSCP / TOS byte (RFC 2474 / RFC 2597 / RFC 3246)
+# 2. Layer 4 Transport Ports (UDP 5001, TCP 5002, TCP 5003)
+# ==============================================================================
+
+qos_scheduler:
+  type: "hierarchical_token_bucket" # Linux tc-htb or OVS QoS
+  default_queue: 0
+
+queues:
+  - id: 2
+    name: "high"
+    priority_level: 3
+    weight_pct: 60
+    description: "Voice/video/emergency-like UDP traffic (lowest delay, strictly protected)"
+    classification:
+      ip_protocol: "udp"
+      dst_port: 5001
+      dscp: 46              # EF (Expedited Forwarding)
+      tos: 0xb8             # 184 (DSCP 46 << 2)
+    rates:
+      min_rate_pct: 60      # Guaranteed bandwidth percentage
+      max_rate_pct: 100     # Maximum burst bandwidth percentage
+    burst: "15k"
+    latency: "10ms"
+
+  - id: 1
+    name: "medium"
+    priority_level: 2
+    weight_pct: 30
+    description: "Web/interactive TCP traffic (standard forwarding, reroutable on congestion)"
+    classification:
+      ip_protocol: "tcp"
+      dst_port: 5002
+      dscp: 26              # AF31 (Assured Forwarding Class 3)
+      tos: 0x68             # 104 (DSCP 26 << 2)
+    rates:
+      min_rate_pct: 30
+      max_rate_pct: 80
+    burst: "20k"
+    latency: "30ms"
+
+  - id: 0
+    name: "low"
+    priority_level: 1
+    weight_pct: 10
+    description: "File transfer/bulk backup TCP traffic (first to be rerouted or rate-limited)"
+    classification:
+      ip_protocol: "tcp"
+      dst_port: 5003
+      dscp: 0               # Best Effort (BE)
+      tos: 0x00             # 0
+    rates:
+      min_rate_pct: 10
+      max_rate_pct: 100     # Can consume idle bandwidth when link is uncongested
+    burst: "30k"
+    latency: "100ms"

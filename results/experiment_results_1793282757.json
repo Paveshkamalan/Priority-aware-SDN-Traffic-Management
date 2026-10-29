@@ -1,0 +1,14 @@
+{
+  "export_time": "2026-10-29 14:05:57",
+  "experiment_mode": "baseline",
+  "metrics": {
+    "error": "Could not connect to Ryu Controller: All connection attempts failed"
+  },
+  "flows": {
+    "error": "Could not connect to Ryu Controller: All connection attempts failed"
+  },
+  "reroute_events": {
+    "error": "Could not connect to Ryu Controller: All connection attempts failed"
+  },
+  "history": []
+}

@@ -1,0 +1,374 @@
+{
+  "export_time": "2026-10-29 14:49:32",
+  "experiment_mode": "baseline",
+  "metrics": {
+    "links": [],
+    "queues": [
+      {
+        "switch": "s1",
+        "port": 1,
+        "queue_id": 0,
+        "throughput_mbps": 1.591
+      },
+      {
+        "switch": "s1",
+        "port": 1,
+        "queue_id": 1,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s1",
+        "port": 1,
+        "queue_id": 2,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s1",
+        "port": 2,
+        "queue_id": 0,
+        "throughput_mbps": 0.707
+      },
+      {
+        "switch": "s1",
+        "port": 2,
+        "queue_id": 1,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s1",
+        "port": 2,
+        "queue_id": 2,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s1",
+        "port": 3,
+        "queue_id": 0,
+        "throughput_mbps": 0.885
+      },
+      {
+        "switch": "s1",
+        "port": 3,
+        "queue_id": 1,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s1",
+        "port": 3,
+        "queue_id": 2,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s3",
+        "port": 1,
+        "queue_id": 0,
+        "throughput_mbps": 1.072
+      },
+      {
+        "switch": "s3",
+        "port": 1,
+        "queue_id": 1,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s3",
+        "port": 1,
+        "queue_id": 2,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s3",
+        "port": 2,
+        "queue_id": 0,
+        "throughput_mbps": 0.829
+      },
+      {
+        "switch": "s3",
+        "port": 2,
+        "queue_id": 1,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s3",
+        "port": 2,
+        "queue_id": 2,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s4",
+        "port": 1,
+        "queue_id": 0,
+        "throughput_mbps": 0.931
+      },
+      {
+        "switch": "s4",
+        "port": 1,
+        "queue_id": 1,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s4",
+        "port": 1,
+        "queue_id": 2,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s4",
+        "port": 2,
+        "queue_id": 0,
+        "throughput_mbps": 1.185
+      },
+      {
+        "switch": "s4",
+        "port": 2,
+        "queue_id": 1,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s4",
+        "port": 2,
+        "queue_id": 2,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s6",
+        "port": 1,
+        "queue_id": 0,
+        "throughput_mbps": 1.57
+      },
+      {
+        "switch": "s6",
+        "port": 1,
+        "queue_id": 1,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s6",
+        "port": 1,
+        "queue_id": 2,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s6",
+        "port": 2,
+        "queue_id": 0,
+        "throughput_mbps": 0.871
+      },
+      {
+        "switch": "s6",
+        "port": 2,
+        "queue_id": 1,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s6",
+        "port": 2,
+        "queue_id": 2,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s6",
+        "port": 3,
+        "queue_id": 0,
+        "throughput_mbps": 0.701
+      },
+      {
+        "switch": "s6",
+        "port": 3,
+        "queue_id": 1,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s6",
+        "port": 3,
+        "queue_id": 2,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s2",
+        "port": 1,
+        "queue_id": 0,
+        "throughput_mbps": 1.351
+      },
+      {
+        "switch": "s2",
+        "port": 1,
+        "queue_id": 1,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s2",
+        "port": 1,
+        "queue_id": 2,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s2",
+        "port": 2,
+        "queue_id": 0,
+        "throughput_mbps": 1.337
+      },
+      {
+        "switch": "s2",
+        "port": 2,
+        "queue_id": 1,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s2",
+        "port": 2,
+        "queue_id": 2,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s2",
+        "port": 3,
+        "queue_id": 0,
+        "throughput_mbps": 1.149
+      },
+      {
+        "switch": "s2",
+        "port": 3,
+        "queue_id": 1,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s2",
+        "port": 3,
+        "queue_id": 2,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s5",
+        "port": 1,
+        "queue_id": 0,
+        "throughput_mbps": 1.114
+      },
+      {
+        "switch": "s5",
+        "port": 1,
+        "queue_id": 1,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s5",
+        "port": 1,
+        "queue_id": 2,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s5",
+        "port": 2,
+        "queue_id": 0,
+        "throughput_mbps": 1.322
+      },
+      {
+        "switch": "s5",
+        "port": 2,
+        "queue_id": 1,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s5",
+        "port": 2,
+        "queue_id": 2,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s5",
+        "port": 3,
+        "queue_id": 0,
+        "throughput_mbps": 1.334
+      },
+      {
+        "switch": "s5",
+        "port": 3,
+        "queue_id": 1,
+        "throughput_mbps": 0.0
+      },
+      {
+        "switch": "s5",
+        "port": 3,
+        "queue_id": 2,
+        "throughput_mbps": 0.0
+      }
+    ],
+    "timestamp": 1793285372.7859688,
+    "reroute_events_count": 0,
+    "adaptive_enabled": false,
+    "qos_enabled": false
+  },
+  "flows": [
+    {
+      "flow_id": "flow_high_voip",
+      "priority": 3,
+      "class": "high",
+      "current_path": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "original_path": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "src_ip": "10.0.0.1",
+      "dst_ip": "10.0.0.2",
+      "dst_port": 5001,
+      "proto": "udp",
+      "rerouted": false,
+      "last_reroute_time": 0.0
+    },
+    {
+      "flow_id": "flow_medium_web",
+      "priority": 2,
+      "class": "medium",
+      "current_path": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "original_path": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "src_ip": "10.0.0.1",
+      "dst_ip": "10.0.0.2",
+      "dst_port": 5002,
+      "proto": "tcp",
+      "rerouted": false,
+      "last_reroute_time": 0.0
+    },
+    {
+      "flow_id": "flow_low_bulk",
+      "priority": 1,
+      "class": "low",
+      "current_path": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "original_path": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "src_ip": "10.0.0.1",
+      "dst_ip": "10.0.0.2",
+      "dst_port": 5003,
+      "proto": "tcp",
+      "rerouted": false,
+      "last_reroute_time": 0.0
+    }
+  ],
+  "reroute_events": [],
+  "history": []
+}

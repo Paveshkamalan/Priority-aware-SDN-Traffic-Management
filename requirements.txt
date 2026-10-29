@@ -1,0 +1,15 @@
+# Python Dependencies for Priority-Aware SDN Traffic Management Project
+# Note: Ryu 4.34 and Open vSwitch are installed directly via system/WSL scripts
+
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.4.0
+pyyaml>=6.0.1
+jinja2>=3.1.2
+requests>=2.31.0
+pytest>=7.4.0
+matplotlib>=3.8.0
+websockets>=12.0
+networkx>=3.1
+aiofiles>=23.2.0
+httpx>=0.25.0

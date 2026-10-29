@@ -1,0 +1,124 @@
+# ==============================================================================
+# Topology Configuration: Priority-Aware Adaptive SDN Network
+# ==============================================================================
+# Defines Open vSwitch datapath nodes, hosts, links, and QoS parameters.
+# Path 1: S1 -> S2 -> S4 -> S6 (Lowest latency: ~8ms, Capacity: 40 Mbps) - Initial Shortest Path
+# Path 2: S1 -> S2 -> S5 -> S6 (Latency: ~10ms, Capacity: 25 Mbps)
+# Path 3: S1 -> S3 -> S5 -> S6 (Latency: ~12ms, Capacity: 20 Mbps)
+# ==============================================================================
+
+controller:
+  ip: "127.0.0.1"
+  port: 6653
+  protocol: "tcp"
+  openflow_version: "OpenFlow13"
+
+switches:
+  - id: "s1"
+    dpid: "0000000000000001"
+    description: "Ingress edge switch connected to Server A"
+  - id: "s2"
+    dpid: "0000000000000002"
+    description: "Core distribution switch (west branch)"
+  - id: "s3"
+    dpid: "0000000000000003"
+    description: "Core distribution switch (east branch)"
+  - id: "s4"
+    dpid: "0000000000000004"
+    description: "Aggregation switch (Path 1 intermediate)"
+  - id: "s5"
+    dpid: "0000000000000005"
+    description: "Aggregation switch (Path 2/3 alternate intermediate)"
+  - id: "s6"
+    dpid: "0000000000000006"
+    description: "Egress edge switch connected to Server B"
+
+hosts:
+  - id: "h1"
+    name: "Server A"
+    ip: "10.0.0.1"
+    netmask: "255.255.255.0"
+    mac: "00:00:00:00:00:01"
+    connected_to: "s1"
+    port: 1
+  - id: "h2"
+    name: "Server B"
+    ip: "10.0.0.2"
+    netmask: "255.255.255.0"
+    mac: "00:00:00:00:00:02"
+    connected_to: "s6"
+    port: 1
+
+links:
+  # Host links
+  - node1: "h1"
+    node2: "s1"
+    bw: 100       # Mbps
+    delay: "1ms"
+    loss: 0
+    max_queue_size: 1000
+
+  - node1: "s6"
+    node2: "h2"
+    bw: 100       # Mbps
+    delay: "1ms"
+    loss: 0
+    max_queue_size: 1000
+
+  # Inter-switch links
+  # Path 1 branches: S1-S2, S2-S4, S4-S6
+  - node1: "s1"
+    node2: "s2"
+    bw: 50        # Mbps
+    delay: "2ms"
+    loss: 0
+    cost: 2
+    max_queue_size: 500
+
+  - node1: "s1"
+    node2: "s3"
+    bw: 30        # Mbps
+    delay: "5ms"
+    loss: 0
+    cost: 5
+    max_queue_size: 500
+
+  - node1: "s2"
+    node2: "s4"
+    bw: 40        # Mbps
+    delay: "2ms"
+    loss: 0
+    cost: 2
+    max_queue_size: 500
+
+  - node1: "s2"
+    node2: "s5"
+    bw: 25        # Mbps
+    delay: "4ms"
+    loss: 0
+    cost: 4
+    max_queue_size: 500
+
+  - node1: "s3"
+    node2: "s5"
+    bw: 20        # Mbps
+    delay: "3ms"
+    loss: 0
+    cost: 3
+    max_queue_size: 500
+
+  - node1: "s4"
+    node2: "s6"
+    bw: 40        # Mbps
+    delay: "2ms"
+    loss: 0
+    cost: 2
+    max_queue_size: 500
+
+  - node1: "s5"
+    node2: "s6"
+    bw: 30        # Mbps
+    delay: "2ms"
+    loss: 0
+    cost: 2
+    max_queue_size: 500
