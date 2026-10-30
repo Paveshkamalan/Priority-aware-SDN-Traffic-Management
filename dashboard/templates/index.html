@@ -66,9 +66,10 @@
       <div class="card-header">
         <h2><i class="fa-solid fa-diagram-project"></i> Live Multi-Path Topology</h2>
         <div class="legend">
-          <span class="legend-item"><span class="legend-box green"></span> &lt; 70% Normal</span>
-          <span class="legend-item"><span class="legend-box yellow"></span> 70–85% Warning</span>
-          <span class="legend-item"><span class="legend-box red"></span> &gt; 85% Congested</span>
+          <span class="legend-item"><span class="legend-box green"></span> &lt;30% Normal</span>
+          <span class="legend-item"><span class="legend-box yellow"></span> 30–60% Moderate</span>
+          <span class="legend-item"><span class="legend-box orange"></span> 60–80% Warning</span>
+          <span class="legend-item"><span class="legend-box red"></span> &gt;80% Congested</span>
         </div>
       </div>
       <div class="card-body">
@@ -89,6 +90,24 @@
         <h2><i class="fa-solid fa-sliders"></i> Controller & Traffic Controls</h2>
       </div>
       <div class="card-body">
+        <!-- Fast Demonstration Controls -->
+        <div class="demo-banner">
+          <div class="demo-banner-title">
+            <i class="fa-solid fa-bolt-lightning"></i> <strong>Live Demo Workloads (Instant Color Change &lt;2s)</strong>
+          </div>
+          <div class="demo-banner-buttons">
+            <button class="btn btn-burst-red btn-sm" id="btn-demo-congest" title="Blasts 38 Mbps UDP burst to saturate Path 1 immediately">
+              <i class="fa-solid fa-fire"></i> Instant Congest (38M UDP &rarr; Red)
+            </button>
+            <button class="btn btn-burst-orange btn-sm" id="btn-demo-warning" title="Blasts 25 Mbps UDP burst to show Warning immediately">
+              <i class="fa-solid fa-triangle-exclamation"></i> Moderate Load (25M UDP &rarr; Orange)
+            </button>
+            <button class="btn btn-secondary btn-sm" id="btn-demo-stop" title="Stop demo traffic">
+              <i class="fa-solid fa-circle-stop"></i> Stop Traffic
+            </button>
+          </div>
+        </div>
+
         <!-- Algorithmic Toggles -->
         <div class="control-row">
           <label class="toggle-switch">
@@ -155,14 +174,21 @@
             <div class="form-group">
               <label for="traffic-class-select">Traffic Class</label>
               <select id="traffic-class-select">
-                <option value="low" selected>Low Priority (Bulk TCP)</option>
-                <option value="medium">Medium Priority (Web TCP)</option>
-                <option value="high">High Priority (Voice UDP)</option>
+                <option value="low" selected>Low Priority (Bulk - 5003)</option>
+                <option value="medium">Medium Priority (Web - 5002)</option>
+                <option value="high">High Priority (Voice - 5001)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="traffic-proto-select">Protocol</label>
+              <select id="traffic-proto-select">
+                <option value="udp" selected>UDP (Instant Wire-Speed &lt;1s)</option>
+                <option value="tcp">TCP (Slow-Start Window)</option>
               </select>
             </div>
             <div class="form-group">
               <label for="traffic-rate-input">Rate (Mbps)</label>
-              <input type="number" id="traffic-rate-input" min="1" max="100" value="40">
+              <input type="number" id="traffic-rate-input" min="1" max="100" value="38">
             </div>
             <div class="form-group">
               <label for="traffic-duration-input">Duration (s)</label>

@@ -67,16 +67,29 @@ function updateTopologyEdges(metricsData, flowsData) {
   networkEdges.forEach((edge) => {
     const linkKey = `${edge.from}-${edge.to}`;
     const revKey = `${edge.to}-${edge.from}`;
-    const util = utilMap[linkKey] ?? utilMap[revKey] ?? 0.0;
+    let util = utilMap[linkKey] ?? utilMap[revKey] ?? 0.0;
 
-    let edgeColor = "#22c55e"; // Green (< 70%)
+    // Synchronize host edge utilization with edge switch traffic
+    if (edge.id === "h1-s1") {
+      const s1_out = Math.max(utilMap["s1-s2"] || 0, utilMap["s1-s3"] || 0);
+      util = Math.min(s1_out * 0.5, 1.0); // 100M capacity vs 50M switch link
+    } else if (edge.id === "s6-h2") {
+      const s6_in = Math.max(utilMap["s4-s6"] || 0, utilMap["s5-s6"] || 0);
+      util = Math.min(s6_in * 0.4, 1.0);
+    }
+
+    // Dynamic 4-Tier Color Gradient for Instant Feedback
+    let edgeColor = "#22c55e"; // Green (< 30% Uncongested)
     let edgeWidth = 3;
 
-    if (util >= 0.85) {
-      edgeColor = "#ef4444"; // Red (> 85% Congested)
-      edgeWidth = 6;
-    } else if (util >= 0.70) {
-      edgeColor = "#eab308"; // Yellow (70-85% Warning)
+    if (util >= 0.80) {
+      edgeColor = "#ef4444"; // Red (> 80% Congested Bottleneck)
+      edgeWidth = 7;
+    } else if (util >= 0.60) {
+      edgeColor = "#f97316"; // Orange (60% - 80% High Load Warning)
+      edgeWidth = 5;
+    } else if (util >= 0.30) {
+      edgeColor = "#eab308"; // Amber/Yellow (30% - 60% Active Moderate Load)
       edgeWidth = 4;
     }
 
@@ -96,11 +109,12 @@ function updateTopologyEdges(metricsData, flowsData) {
     });
 
     const labelParts = edge.label ? edge.label.split("(")[0].trim() : "";
-    const newLabel = `${labelParts} (${Math.round(util * 100)}%)`;
+    const pct = Math.round(util * 100);
+    const newLabel = `${labelParts} (${pct}%)`;
 
     networkEdges.update({
       id: edge.id,
-      color: { color: edgeColor, highlight: edgeColor },
+      color: { color: edgeColor, highlight: edgeColor, hover: edgeColor },
       width: edgeWidth,
       label: newLabel,
       dashes: isReroutedLink,

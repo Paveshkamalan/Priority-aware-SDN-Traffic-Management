@@ -65,7 +65,7 @@ function startPollingFallback() {
     } catch (e) {
       setControllerStatus(false);
     }
-  }, 1000);
+  }, 500);
 }
 
 function setControllerStatus(online) {
@@ -239,6 +239,26 @@ function setupEventListeners() {
     alert(`Results exported successfully to CSV: ${data.file}`);
   });
 
+  // Fast Demonstration Buttons (< 2s Color Response)
+  document.getElementById("btn-demo-congest")?.addEventListener("click", async () => {
+    const res = await fetch("/api/traffic/demo-congest", { method: "POST" });
+    if (res.ok) {
+      console.log("⚡ Instant Congestion Burst fired (38 Mbps UDP)");
+    }
+  });
+
+  document.getElementById("btn-demo-warning")?.addEventListener("click", async () => {
+    const res = await fetch("/api/traffic/demo-warning", { method: "POST" });
+    if (res.ok) {
+      console.log("⚡ Moderate Load Warning Burst fired (25 Mbps UDP)");
+    }
+  });
+
+  document.getElementById("btn-demo-stop")?.addEventListener("click", async () => {
+    await fetch("/api/traffic/stop", { method: "POST" });
+    console.log("🛑 Demo traffic halted.");
+  });
+
   // Toggles
   document.getElementById("toggle-adaptive")?.addEventListener("change", async (e) => {
     await fetch("/api/reroute/toggle", {
@@ -261,7 +281,7 @@ function setupEventListeners() {
     const tClass = document.getElementById("traffic-class-select").value;
     const rate = document.getElementById("traffic-rate-input").value;
     const duration = document.getElementById("traffic-duration-input").value;
-    const protocol = tClass === "high" ? "udp" : "tcp";
+    const protocol = document.getElementById("traffic-proto-select")?.value || (tClass === "high" ? "udp" : "tcp");
 
     const res = await fetch("/api/traffic/start", {
       method: "POST",
@@ -274,7 +294,7 @@ function setupEventListeners() {
       }),
     });
     if (res.ok) {
-      alert(`Traffic flow (${tClass.toUpperCase()} ${rate}Mbps ${protocol.toUpperCase()}) started.`);
+      console.log(`Traffic flow (${tClass.toUpperCase()} ${rate}Mbps ${protocol.toUpperCase()}) started.`);
     }
   });
 

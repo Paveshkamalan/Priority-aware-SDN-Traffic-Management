@@ -48,6 +48,9 @@ htmlcov/
 *.log
 /tmp/
 sdn_traffic_pids.json
+results/*.json
+results/baseline/*.json
+results/adaptive/*.json
 
 # IDE & OS files
 .vscode/

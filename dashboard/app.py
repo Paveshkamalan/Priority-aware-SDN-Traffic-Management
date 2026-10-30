@@ -174,6 +174,29 @@ async def stop_traffic():
     return {"status": "stopped"}
 
 
+@app.post("/api/traffic/demo-congest")
+async def demo_congest():
+    """
+    Instantly congests Path 1 with 38 Mbps UDP burst.
+    Takes effect within 1-2 seconds with zero TCP slow-start delay.
+    """
+    script_path = os.path.join(PROJECT_ROOT, "mininet", "traffic_generator.py")
+    cmd = f"python3 {script_path} demo-congest --duration 30"
+    proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    return {"status": "started", "mode": "instant_congestion", "target": "Path 1 (s1-s2-s4-s6)", "rate_mbps": 38.0}
+
+
+@app.post("/api/traffic/demo-warning")
+async def demo_warning():
+    """
+    Injects 25 Mbps UDP burst to immediately trigger Warning (Orange) state.
+    """
+    script_path = os.path.join(PROJECT_ROOT, "mininet", "traffic_generator.py")
+    cmd = f"python3 {script_path} demo-warning --duration 30"
+    proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    return {"status": "started", "mode": "warning_load", "target": "Path 1 (s1-s2-s4-s6)", "rate_mbps": 25.0}
+
+
 @app.post("/api/config")
 async def update_config(payload: dict):
     """Update thresholds or controller parameters."""
@@ -221,7 +244,8 @@ async def run_experiment(exp_type: str):
 
     # Launch experiment profile traffic in background
     script_path = os.path.join(PROJECT_ROOT, "mininet", "traffic_generator.py")
-    cmd = f"python3 {script_path} run-profile --duration 45 &"
+    cfg_path = os.path.join(PROJECT_ROOT, "config", "experiment.yaml")
+    cmd = f"python3 {script_path} run-profile --config {cfg_path} --duration 45 &"
     subprocess.Popen(cmd, shell=True)
 
     current_experiment["running"] = True
@@ -308,7 +332,7 @@ async def websocket_metrics(websocket: WebSocket):
                     current_experiment["running"] = False
 
             await websocket.send_text(json.dumps(payload))
-            await asyncio.sleep(1.0)
+            await asyncio.sleep(0.5)
     except WebSocketDisconnect:
         logger.debug("WebSocket client disconnected.")
     except Exception as e:

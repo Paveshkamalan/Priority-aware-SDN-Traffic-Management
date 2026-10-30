@@ -22,10 +22,25 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 logger = logging.getLogger("TrafficGen")
 
 PID_FILE = "/tmp/sdn_traffic_pids.json"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
+DEFAULT_CONFIG_PATH = os.path.join(PROJECT_ROOT, "config", "experiment.yaml")
 
 
 def load_yaml(path: str) -> Dict[str, Any]:
-    with open(path, "r", encoding="utf-8") as f:
+    resolved_path = path
+    if not os.path.isabs(path):
+        candidates = [
+            os.path.abspath(path),
+            os.path.join(PROJECT_ROOT, path),
+            os.path.join(SCRIPT_DIR, path),
+            DEFAULT_CONFIG_PATH,
+        ]
+        for c in candidates:
+            if os.path.exists(c):
+                resolved_path = c
+                break
+    with open(resolved_path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
@@ -137,15 +152,20 @@ def start_stream(
 ) -> Optional[subprocess.Popen]:
     """
     Launch a single traffic stream from source host to destination IP.
+    Ensures iperf3 server is actively listening on the target port before firing.
     """
-    proto_flag = "-u" if protocol.lower() == "udp" else ""
+    # Ensure server is listening on target port
+    execute_in_host("h2", f"iperf3 -s -p {port} -D", background=False)
+    time.sleep(0.05)
+
+    proto_flag = "-u --length 1400" if protocol.lower() == "udp" else ""
     bitrate_flag = f"-b {rate_mbps}M"
     tos_flag = f"-S {tos}"
     json_flag = f"-J --logfile {output_json}" if output_json else ""
 
     cmd = (
         f"iperf3 -c {dst_ip} -p {port} {proto_flag} {bitrate_flag} {tos_flag} "
-        f"-t {duration} {json_flag} &"
+        f"-t {duration} {json_flag}"
     )
 
     logger.info(
@@ -153,6 +173,52 @@ def start_stream(
     )
     proc = execute_in_host(src_host, cmd, background=True)
     return proc
+
+
+def run_demo_burst(burst_type: str = "congest", duration: int = 30) -> None:
+    """
+    High-speed demonstration burst:
+    - 'congest': 38 Mbps UDP on port 5001/5003 (hits 95% on 40 Mbps link within 1 second -> INSTANT RED)
+    - 'warning': 25 Mbps UDP on port 5002 (hits 62.5% on 40 Mbps link within 1 second -> INSTANT ORANGE)
+    """
+    stop_traffic()
+    time.sleep(0.2)
+    start_iperf_servers(target_host="h2", ports=[5001, 5002, 5003])
+    time.sleep(0.3)
+
+    dst_ip = "10.0.0.2"
+    procs = []
+
+    if burst_type == "congest":
+        logger.info(f"⚡ Launching FAST DEMO CONGESTION BURST (38 Mbps UDP) for {duration}s...")
+        p = start_stream(
+            src_host="h1",
+            dst_ip=dst_ip,
+            traffic_class="low",
+            rate_mbps=38.0,
+            duration=duration,
+            protocol="udp",
+            port=5003,
+            tos=0,
+        )
+        if p and p.pid:
+            procs.append(p.pid)
+    else:
+        logger.info(f"⚡ Launching FAST DEMO WARNING BURST (25 Mbps UDP) for {duration}s...")
+        p = start_stream(
+            src_host="h1",
+            dst_ip=dst_ip,
+            traffic_class="medium",
+            rate_mbps=25.0,
+            duration=duration,
+            protocol="udp",
+            port=5002,
+            tos=104,
+        )
+        if p and p.pid:
+            procs.append(p.pid)
+
+    save_active_pids(procs)
 
 
 def measure_ping_rtt(src_host: str, dst_ip: str, count: int = 5) -> Dict[str, float]:
@@ -185,19 +251,21 @@ def measure_ping_rtt(src_host: str, dst_ip: str, count: int = 5) -> Dict[str, fl
 
 
 def run_experiment_traffic(
-    config_path: str = "../config/experiment.yaml",
+    config_path: str = DEFAULT_CONFIG_PATH,
     profile_name: str = "high_medium_low",
     duration: int = 60,
     results_dir: str = "../results",
 ) -> None:
     """Run full three-class traffic generation according to experiment profile."""
+    if not os.path.isabs(results_dir):
+        results_dir = os.path.abspath(os.path.join(PROJECT_ROOT, results_dir))
     os.makedirs(results_dir, exist_ok=True)
     cfg = load_yaml(config_path)
     profiles = cfg.get("traffic_profiles", {})
 
     # Start iperf servers on Server B (h2)
     start_iperf_servers(target_host="h2", ports=[5001, 5002, 5003])
-    time.sleep(1)
+    time.sleep(0.3)
 
     dst_ip = "10.0.0.2"
     procs = []
@@ -256,18 +324,26 @@ def run_experiment_traffic(
 
 def main():
     parser = argparse.ArgumentParser(description="Multi-Class Traffic Generator for SDN Simulation")
-    parser.add_argument("action", choices=["start", "stop", "run-profile", "ping"], help="Traffic generator action")
+    parser.add_argument(
+        "action",
+        choices=["start", "stop", "run-profile", "ping", "demo-congest", "demo-warning"],
+        help="Traffic generator action",
+    )
     parser.add_argument("--class", dest="traffic_class", choices=["high", "medium", "low"], default="low")
     parser.add_argument("--rate", type=float, default=20.0, help="Traffic rate in Mbps")
     parser.add_argument("--duration", type=int, default=30, help="Duration in seconds")
     parser.add_argument("--protocol", choices=["tcp", "udp"], default="tcp")
     parser.add_argument("--dst", default="10.0.0.2", help="Destination IP")
     parser.add_argument("--src", default="h1", help="Source host name")
-    parser.add_argument("--config", default="../config/experiment.yaml", help="Path to experiment config")
+    parser.add_argument("--config", default=DEFAULT_CONFIG_PATH, help="Path to experiment config")
     args = parser.parse_args()
 
     if args.action == "stop":
         stop_traffic()
+    elif args.action == "demo-congest":
+        run_demo_burst(burst_type="congest", duration=args.duration)
+    elif args.action == "demo-warning":
+        run_demo_burst(burst_type="warning", duration=args.duration)
     elif args.action == "start":
         start_iperf_servers(target_host="h2")
         port_map = {"high": 5001, "medium": 5002, "low": 5003}

@@ -257,9 +257,52 @@ body {
   border-radius: 2px;
 }
 
-.legend-box.green { background-color: var(--accent-green); }
-.legend-box.yellow { background-color: var(--accent-yellow); }
-.legend-box.red { background-color: var(--accent-red); }
+.legend-box.green { background-color: #22c55e; }
+.legend-box.yellow { background-color: #eab308; }
+.legend-box.orange { background-color: #f97316; }
+.legend-box.red { background-color: #ef4444; }
+
+.demo-banner {
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid #38bdf8;
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+}
+.demo-banner-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #38bdf8;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.demo-banner-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.btn-burst-red {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  color: #fff;
+  border: none;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+  font-weight: 700;
+}
+.btn-burst-red:hover {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+}
+.btn-burst-orange {
+  background: linear-gradient(135deg, #f97316, #c2410c);
+  color: #fff;
+  border: none;
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.3);
+  font-weight: 700;
+}
+.btn-burst-orange:hover {
+  background: linear-gradient(135deg, #ea580c, #9a3412);
+}
 
 /* Controls & Toggle */
 .control-row {

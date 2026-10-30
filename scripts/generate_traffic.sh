@@ -17,13 +17,9 @@ if [ -z "$VIRTUAL_ENV" ]; then
 fi
 
 CLASS="${1:-low}"
-RATE="${2:-20}"
+RATE="${2:-38}"
 DURATION="${3:-30}"
-PROTOCOL="tcp"
-
-if [ "$CLASS" == "high" ]; then
-    PROTOCOL="udp"
-fi
+PROTOCOL="${4:-udp}"
 
 echo "Injecting $CLASS priority traffic ($RATE Mbps $PROTOCOL) for $DURATION seconds..."
 python3 "$PROJECT_DIR/mininet/traffic_generator.py" start \

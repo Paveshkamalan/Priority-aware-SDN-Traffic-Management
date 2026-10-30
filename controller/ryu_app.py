@@ -49,14 +49,14 @@ class PrioritySDNController(app_manager.RyuApp):
         # Core modules
         self.topo_mgr = TopologyManager()
         self.path_computer = PathComputer(default_congestion_penalty=10.0)
-        self.monitor = NetworkMonitor(poll_interval=1.0)
+        self.monitor = NetworkMonitor(poll_interval=0.5)
         self.qos_mgr = QoSManager(enabled=True)
         self.rerouter = PriorityRerouter(
-            warning_threshold=0.70,
-            congestion_threshold=0.85,
-            recovery_threshold=0.50,
-            congestion_intervals=3,
-            recovery_intervals=5,
+            warning_threshold=0.60,
+            congestion_threshold=0.80,
+            recovery_threshold=0.45,
+            congestion_intervals=2,
+            recovery_intervals=4,
             enabled=True,
         )
 
@@ -425,11 +425,11 @@ class PrioritySDNController(app_manager.RyuApp):
     # --------------------------------------------------------------------------
 
     def _monitor_loop(self):
-        """Greenlet periodic stats polling thread running at 1 Hz."""
+        """Greenlet periodic stats polling thread running at 2 Hz (every 0.5s for fast demo feedback)."""
         while True:
             for dp in list(self.datapaths.values()):
                 self._request_stats(dp)
-            hub.sleep(1.0)
+            hub.sleep(0.5)
 
     def _request_stats(self, datapath):
         """Sends OFPPortStatsRequest and OFPQueueStatsRequest to datapath."""

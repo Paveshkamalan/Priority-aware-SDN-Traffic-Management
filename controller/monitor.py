@@ -17,7 +17,7 @@ class NetworkMonitor:
     Monitors switch ports, links, and queues to compute real-time throughput and utilization.
     """
 
-    def __init__(self, poll_interval: float = 1.0, history_length: int = 60):
+    def __init__(self, poll_interval: float = 0.5, history_length: int = 60):
         self.poll_interval = poll_interval
         self.history_length = history_length
 
